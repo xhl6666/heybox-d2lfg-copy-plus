@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HeyBox D2LFG Copy+
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/xhl6666/heybox-d2lfg-copy-plus
 // @version      0.1
 // @description  Auto add prefix string in HeyBox Destiny LFG tool.
 // @author       You
