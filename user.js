@@ -3,7 +3,7 @@
 // @namespace    https://github.com/xhl6666/heybox-d2lfg-copy-plus
 // @version      0.1
 // @description  Auto add prefix string in HeyBox Destiny LFG tool.
-// @author       You
+// @author       Hitokage(xhl6666)
 // @match        https://api.xiaoheihe.cn/game/h5_activity/common_team?appid=1085660
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=xiaoheihe.cn
 // @require      https://unpkg.com/sweetalert2@10.16.6/dist/sweetalert2.min.js
@@ -11,20 +11,22 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
+// @grant        GM_openInTab
+// @license      GPL-3.0
 // ==/UserScript==
-
+ 
 (function() {
     'use strict';
-
+ 
     let util = {
         getValue(name) {
             return GM_getValue(name);
         },
-
+ 
         setValue(name, value) {
             GM_setValue(name, value);
         },
-
+ 
         addStyle(id, tag, css) {
             tag = tag || 'style';
             let doc = document, styleDom = doc.getElementById(id);
@@ -36,8 +38,8 @@
             document.head.appendChild(style);
         },
     };
-
-    GM_registerMenuCommand('⚙️ 设置', () => {
+ 
+    GM_registerMenuCommand('设置', () => {
         let html = `<div style="font-size: 1em;">
                       <label class="starpassword-setting-label">游戏语言
                       <select id="S-starpassword-show-method" class="starpassword-select">
@@ -61,13 +63,27 @@
         }).then((res) => {
             res.isConfirmed && history.go(0);
         });
-
+ 
         document.getElementById('S-starpassword-show-method').addEventListener('change', (e) => {
             util.setValue('setting_language', e.currentTarget.value);
         });
     });
-
-
+ 
+    // 开个新标签页提示也太抽象了
+    GM.registerMenuCommand("黑盒组队区", () => {
+        GM_openInTab("https://api.xiaoheihe.cn/game/h5_activity/common_team?appid=1085660");
+        var notice = "你可以將此網站加入書籤:)"
+        let lang = util.getValue('setting_language') ? util.getValue('setting_language') : 0;
+        if ( lang == 0 ) {
+            notice = "你可以將此網站加入書籤:)";
+        } else if ( lang == 1 ) {
+            notice = "你可以将此网站加入书签:)";
+        } else if ( lang == 2 ) {
+            notice = "You can bookmark this website:)";
+        }
+        alert(notice);
+    });
+ 
     function editCopyText() {
         var prefix_str = "/加入 "
         let lang = util.getValue('setting_language') ? util.getValue('setting_language') : 0;
@@ -85,14 +101,14 @@
             item.dataset.clipboardText = prefix_str + bngid;
         }
     }
-
+ 
     function listenInsert() {
         let lst = document.querySelector('.list');
         lst.addEventListener("DOMNodeInserted", function(event) {
             editCopyText()
         })
     }
-
+ 
     setTimeout(()=>{
         editCopyText()
         listenInsert()
